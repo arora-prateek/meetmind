@@ -1,0 +1,428 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		00A00F2FBB0E9E77A63361E2 /* MeetingDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 636D46221CFBBB60AE7645A1 /* MeetingDetailView.swift */; };
+		16D2DE63198E9BF6A0063EFF /* BackendClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = D441DC0584EE20BBA77A57CD /* BackendClient.swift */; };
+		2378B290888E7DF862E1C03C /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C5FD6CD7549755DA42CAFA7 /* AudioRecorder.swift */; };
+		46A568A7E1634635BE9647E4 /* MeetMindApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0616AB7C68F6B90F697318A /* MeetMindApp.swift */; };
+		874FF7E31AA7A2D09857D169 /* MeetingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42786DB08880093E444A14DD /* MeetingListView.swift */; };
+		A2B60FFCD2AAECDD00A60F69 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 70B340AEBEFD8E5105ED5EB0 /* GRDB */; };
+		A5143B5C51440EFFDFBADD26 /* RecordingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE5C8E2C2B0A4DE4B1C84BC /* RecordingView.swift */; };
+		BD33F069B7B350FE18604730 /* Meeting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 682686CF0BF655C93497DD98 /* Meeting.swift */; };
+		BF12C7D90AFF5320FBD46540 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 573580F9BC3ED5AD374DAC0B /* ContentView.swift */; };
+		CFB47356ED7CD58760B76F42 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CE23B65E144F7D750124F1 /* AppState.swift */; };
+		D29808AF8E2B7AABB5F308DC /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 444B24F6065FF253EEC9F790 /* Config.swift */; };
+		FF5A656AD505DD0508B78559 /* MeetingStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ED6668B67043749C3840072 /* MeetingStore.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		37CE23B65E144F7D750124F1 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		3C5FD6CD7549755DA42CAFA7 /* AudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
+		3ED6668B67043749C3840072 /* MeetingStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingStore.swift; sourceTree = "<group>"; };
+		42786DB08880093E444A14DD /* MeetingListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingListView.swift; sourceTree = "<group>"; };
+		444B24F6065FF253EEC9F790 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		573580F9BC3ED5AD374DAC0B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		58CCFD2B80BCDED61FFC753C /* MeetMind.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MeetMind.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		636D46221CFBBB60AE7645A1 /* MeetingDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingDetailView.swift; sourceTree = "<group>"; };
+		682686CF0BF655C93497DD98 /* Meeting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Meeting.swift; sourceTree = "<group>"; };
+		6FE5C8E2C2B0A4DE4B1C84BC /* RecordingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingView.swift; sourceTree = "<group>"; };
+		9A5D7A5F35B0D6AF04BDEA05 /* MeetMind.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MeetMind.entitlements; sourceTree = "<group>"; };
+		D441DC0584EE20BBA77A57CD /* BackendClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendClient.swift; sourceTree = "<group>"; };
+		E5DD827223438686D0A22E7E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		F0616AB7C68F6B90F697318A /* MeetMindApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetMindApp.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E91310F99D383A83415325B5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A2B60FFCD2AAECDD00A60F69 /* GRDB in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		3473817811CD51CEF1477D2C /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				573580F9BC3ED5AD374DAC0B /* ContentView.swift */,
+				636D46221CFBBB60AE7645A1 /* MeetingDetailView.swift */,
+				42786DB08880093E444A14DD /* MeetingListView.swift */,
+				6FE5C8E2C2B0A4DE4B1C84BC /* RecordingView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		87C529141E844FDA28E90879 = {
+			isa = PBXGroup;
+			children = (
+				F93E4AA446D5AAAE4E3A33A0 /* MeetMind */,
+				8B79016AF5188B3ACAECB947 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		8B79016AF5188B3ACAECB947 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				58CCFD2B80BCDED61FFC753C /* MeetMind.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		9B7BFA362EE300C0D840585D /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				682686CF0BF655C93497DD98 /* Meeting.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		9CE00A4706992461311B07BF /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				3ED6668B67043749C3840072 /* MeetingStore.swift */,
+			);
+			path = Storage;
+			sourceTree = "<group>";
+		};
+		9FAC8F94E2BF76C698719041 /* API */ = {
+			isa = PBXGroup;
+			children = (
+				D441DC0584EE20BBA77A57CD /* BackendClient.swift */,
+			);
+			path = API;
+			sourceTree = "<group>";
+		};
+		A6F3D9AC0ACD261130F45A39 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				E5DD827223438686D0A22E7E /* Info.plist */,
+				9A5D7A5F35B0D6AF04BDEA05 /* MeetMind.entitlements */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		CC035BCDEBD2DF1EF802B133 /* Capture */ = {
+			isa = PBXGroup;
+			children = (
+				3C5FD6CD7549755DA42CAFA7 /* AudioRecorder.swift */,
+			);
+			path = Capture;
+			sourceTree = "<group>";
+		};
+		F93E4AA446D5AAAE4E3A33A0 /* MeetMind */ = {
+			isa = PBXGroup;
+			children = (
+				9FAC8F94E2BF76C698719041 /* API */,
+				FE5239DC5D688C1A0F6D9EE3 /* App */,
+				CC035BCDEBD2DF1EF802B133 /* Capture */,
+				9B7BFA362EE300C0D840585D /* Models */,
+				A6F3D9AC0ACD261130F45A39 /* Resources */,
+				9CE00A4706992461311B07BF /* Storage */,
+				3473817811CD51CEF1477D2C /* Views */,
+			);
+			path = MeetMind;
+			sourceTree = "<group>";
+		};
+		FE5239DC5D688C1A0F6D9EE3 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				37CE23B65E144F7D750124F1 /* AppState.swift */,
+				444B24F6065FF253EEC9F790 /* Config.swift */,
+				F0616AB7C68F6B90F697318A /* MeetMindApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		6D305E7FB836A8C46E73D1C7 /* MeetMind */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C0C26FCD406F123A91FE905D /* Build configuration list for PBXNativeTarget "MeetMind" */;
+			buildPhases = (
+				A91CE4E101CE0B574FD93CA0 /* Sources */,
+				E91310F99D383A83415325B5 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MeetMind;
+			packageProductDependencies = (
+				70B340AEBEFD8E5105ED5EB0 /* GRDB */,
+			);
+			productName = MeetMind;
+			productReference = 58CCFD2B80BCDED61FFC753C /* MeetMind.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		12EE4B8D7B99B0A6410EDA5B /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					6D305E7FB836A8C46E73D1C7 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = F6F33997F01CAFF6A8AFA794 /* Build configuration list for PBXProject "MeetMind" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 87C529141E844FDA28E90879;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				159DD25DFAC86ED1CEB5206C /* XCRemoteSwiftPackageReference "GRDB.swift" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 8B79016AF5188B3ACAECB947 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				6D305E7FB836A8C46E73D1C7 /* MeetMind */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A91CE4E101CE0B574FD93CA0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CFB47356ED7CD58760B76F42 /* AppState.swift in Sources */,
+				2378B290888E7DF862E1C03C /* AudioRecorder.swift in Sources */,
+				16D2DE63198E9BF6A0063EFF /* BackendClient.swift in Sources */,
+				D29808AF8E2B7AABB5F308DC /* Config.swift in Sources */,
+				BF12C7D90AFF5320FBD46540 /* ContentView.swift in Sources */,
+				46A568A7E1634635BE9647E4 /* MeetMindApp.swift in Sources */,
+				BD33F069B7B350FE18604730 /* Meeting.swift in Sources */,
+				00A00F2FBB0E9E77A63361E2 /* MeetingDetailView.swift in Sources */,
+				874FF7E31AA7A2D09857D169 /* MeetingListView.swift in Sources */,
+				FF5A656AD505DD0508B78559 /* MeetingStore.swift in Sources */,
+				A5143B5C51440EFFDFBADD26 /* RecordingView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1704A9F2CAB8A0B03214120B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = MeetMind/Resources/MeetMind.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = MeetMind/Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		3E5E1148CA6A74BC4D6510E6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.meetmind.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		AB6111520073AD097BD757F9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.meetmind.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+		BF5105DC8DDF7786EE4817D6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = MeetMind/Resources/MeetMind.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = MeetMind/Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C0C26FCD406F123A91FE905D /* Build configuration list for PBXNativeTarget "MeetMind" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BF5105DC8DDF7786EE4817D6 /* Debug */,
+				1704A9F2CAB8A0B03214120B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		F6F33997F01CAFF6A8AFA794 /* Build configuration list for PBXProject "MeetMind" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AB6111520073AD097BD757F9 /* Debug */,
+				3E5E1148CA6A74BC4D6510E6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		159DD25DFAC86ED1CEB5206C /* XCRemoteSwiftPackageReference "GRDB.swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/groue/GRDB.swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		70B340AEBEFD8E5105ED5EB0 /* GRDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 159DD25DFAC86ED1CEB5206C /* XCRemoteSwiftPackageReference "GRDB.swift" */;
+			productName = GRDB;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 12EE4B8D7B99B0A6410EDA5B /* Project object */;
+}

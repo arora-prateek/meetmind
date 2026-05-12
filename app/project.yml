@@ -1,0 +1,38 @@
+name: MeetMind
+options:
+  bundleIdPrefix: com.meetmind
+  deploymentTarget:
+    macOS: "13.0"
+  xcodeVersion: "15.0"
+
+settings:
+  base:
+    SWIFT_VERSION: 5.9
+    MACOSX_DEPLOYMENT_TARGET: 13.0
+    PRODUCT_BUNDLE_IDENTIFIER: com.meetmind.app
+    MARKETING_VERSION: 0.1.0
+    CURRENT_PROJECT_VERSION: 1
+    CODE_SIGN_STYLE: Automatic
+    DEVELOPMENT_TEAM: ""
+
+targets:
+  MeetMind:
+    type: application
+    platform: macOS
+    sources:
+      - path: MeetMind
+    settings:
+      base:
+        INFOPLIST_FILE: MeetMind/Resources/Info.plist
+        CODE_SIGN_ENTITLEMENTS: MeetMind/Resources/MeetMind.entitlements
+    dependencies:
+      - package: GRDB
+    packages:
+      GRDB:
+        url: https://github.com/groue/GRDB.swift
+        from: 6.0.0
+
+packages:
+  GRDB:
+    url: https://github.com/groue/GRDB.swift
+    from: 6.0.0
