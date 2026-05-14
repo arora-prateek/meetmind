@@ -14,6 +14,7 @@
 		874FF7E31AA7A2D09857D169 /* MeetingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42786DB08880093E444A14DD /* MeetingListView.swift */; };
 		A2B60FFCD2AAECDD00A60F69 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 70B340AEBEFD8E5105ED5EB0 /* GRDB */; };
 		A5143B5C51440EFFDFBADD26 /* RecordingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE5C8E2C2B0A4DE4B1C84BC /* RecordingView.swift */; };
+		C7E4A2F1B3D956E8204F7A1C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F5B3A2C4E067F9315A8B2D /* SettingsView.swift */; };
 		BD33F069B7B350FE18604730 /* Meeting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 682686CF0BF655C93497DD98 /* Meeting.swift */; };
 		BF12C7D90AFF5320FBD46540 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 573580F9BC3ED5AD374DAC0B /* ContentView.swift */; };
 		CFB47356ED7CD58760B76F42 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CE23B65E144F7D750124F1 /* AppState.swift */; };
@@ -35,6 +36,7 @@
 		9A5D7A5F35B0D6AF04BDEA05 /* MeetMind.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MeetMind.entitlements; sourceTree = "<group>"; };
 		D441DC0584EE20BBA77A57CD /* BackendClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendClient.swift; sourceTree = "<group>"; };
 		E5DD827223438686D0A22E7E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		D8F5B3A2C4E067F9315A8B2D /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		F0616AB7C68F6B90F697318A /* MeetMindApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetMindApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -57,6 +59,7 @@
 				636D46221CFBBB60AE7645A1 /* MeetingDetailView.swift */,
 				42786DB08880093E444A14DD /* MeetingListView.swift */,
 				6FE5C8E2C2B0A4DE4B1C84BC /* RecordingView.swift */,
+			D8F5B3A2C4E067F9315A8B2D /* SettingsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -217,6 +220,7 @@
 				874FF7E31AA7A2D09857D169 /* MeetingListView.swift in Sources */,
 				FF5A656AD505DD0508B78559 /* MeetingStore.swift in Sources */,
 				A5143B5C51440EFFDFBADD26 /* RecordingView.swift in Sources */,
+				C7E4A2F1B3D956E8204F7A1C /* SettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

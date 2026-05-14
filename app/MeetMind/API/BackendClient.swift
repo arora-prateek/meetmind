@@ -23,11 +23,11 @@ enum BackendError: Error, LocalizedError {
 class BackendClient {
     static let shared = BackendClient()
 
-    private let baseURL: String
-
-    private init() {
-        baseURL = Config.backendURL
+    private var baseURL: String {
+        UserDefaults.standard.string(forKey: "backendURL") ?? "http://localhost:8080"
     }
+
+    private init() {}
 
     func checkHealth() async throws -> Bool {
         guard let url = URL(string: "\(baseURL)/health") else { return false }
