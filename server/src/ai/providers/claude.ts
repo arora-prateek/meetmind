@@ -1,5 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk"
-import { AIProvider, MeetingResult } from "../client"
+import { AIProvider, MeetingResult, parseAIResponse } from "../client"
 import { PROCESS_MEETING_PROMPT } from "../prompts"
 
 export class ClaudeProvider implements AIProvider {
@@ -41,6 +41,6 @@ export class ClaudeProvider implements AIProvider {
       throw new Error("No text response from Claude")
     }
 
-    return JSON.parse(textBlock.text.trim()) as MeetingResult
+    return parseAIResponse(textBlock.text)
   }
 }

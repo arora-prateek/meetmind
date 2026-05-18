@@ -1,14 +1,23 @@
 import { GoogleGenerativeAI } from "@google/generative-ai"
-import { AIProvider, MeetingResult } from "../client"
+import { GoogleAIFileManager } from "@google/generative-ai/server"
+import { AIProvider, MeetingResult, parseAIResponse } from "../client"
 import { PROCESS_MEETING_PROMPT } from "../prompts"
+import * as fs from "fs"
+import * as os from "os"
+import * as path from "path"
+
+// Gemini inline data limit is ~20 MB of raw bytes; use Files API above this
+const INLINE_BYTE_LIMIT = 20 * 1024 * 1024
 
 export class GeminiProvider implements AIProvider {
   private client: GoogleGenerativeAI
+  private fileManager: GoogleAIFileManager
 
   constructor() {
     const apiKey = process.env.GEMINI_API_KEY
     if (!apiKey) throw new Error("GEMINI_API_KEY is not set")
     this.client = new GoogleGenerativeAI(apiKey)
+    this.fileManager = new GoogleAIFileManager(apiKey)
   }
 
   async process(audioBase64: string, mimeType: string): Promise<MeetingResult> {
@@ -16,19 +25,60 @@ export class GeminiProvider implements AIProvider {
       model: process.env.GEMINI_MODEL ?? "gemini-2.0-flash",
     })
 
-    const result = await model.generateContent([
-      {
-        inlineData: {
-          mimeType,
-          data: audioBase64,
-        },
-      },
-      PROCESS_MEETING_PROMPT,
-    ])
+    const audioBytes = Buffer.from(audioBase64, "base64")
+    let uploadedFileName: string | undefined
+    let audioPart: any
 
-    let text = result.response.text().trim()
-    // Strip markdown code fences if the model ignores instructions
-    text = text.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "")
-    return JSON.parse(text) as MeetingResult
+    if (audioBytes.length > INLINE_BYTE_LIMIT) {
+      const { part, fileName } = await this.uploadViaFilesApi(audioBytes, mimeType)
+      audioPart = part
+      uploadedFileName = fileName
+    } else {
+      audioPart = { inlineData: { mimeType, data: audioBase64 } }
+    }
+
+    try {
+      const result = await model.generateContent([audioPart, PROCESS_MEETING_PROMPT])
+      return parseAIResponse(result.response.text())
+    } finally {
+      if (uploadedFileName) {
+        try { await this.fileManager.deleteFile(uploadedFileName) } catch {}
+      }
+    }
+  }
+
+  private async uploadViaFilesApi(
+    audioBytes: Buffer,
+    mimeType: string
+  ): Promise<{ part: any; fileName: string }> {
+    const ext = mimeType.includes("wav") ? ".wav" : ".m4a"
+    const tmpPath = path.join(os.tmpdir(), `meetmind-${Date.now()}${ext}`)
+
+    try {
+      fs.writeFileSync(tmpPath, audioBytes)
+
+      const upload = await this.fileManager.uploadFile(tmpPath, {
+        mimeType,
+        displayName: `meetmind-${Date.now()}`,
+      })
+
+      // Poll until the file is active (usually immediate for audio)
+      let file = upload.file
+      while (file.state === "PROCESSING") {
+        await new Promise((r) => setTimeout(r, 2000))
+        file = await this.fileManager.getFile(file.name)
+      }
+
+      if (file.state !== "ACTIVE") {
+        throw new Error(`Gemini file upload failed with state: ${file.state}`)
+      }
+
+      return {
+        part: { fileData: { mimeType: file.mimeType, fileUri: file.uri } },
+        fileName: file.name,
+      }
+    } finally {
+      try { fs.unlinkSync(tmpPath) } catch {}
+    }
   }
 }
