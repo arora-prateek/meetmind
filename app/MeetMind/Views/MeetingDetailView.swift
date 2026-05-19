@@ -1,4 +1,5 @@
 import SwiftUI
+import AVFoundation
 
 struct MeetingDetailView: View {
     let meeting: Meeting
@@ -7,6 +8,7 @@ struct MeetingDetailView: View {
     @State private var transcriptExpanded = false
     @State private var showDeleteAudioConfirm = false
     @State private var audioFileDeleted = false
+    @StateObject private var player = AudioPlayerController()
 
     var body: some View {
         ScrollView {
@@ -67,26 +69,71 @@ struct MeetingDetailView: View {
                 // Recording artifact
                 if let path = meeting.audioFilePath, !audioFileDeleted {
                     SectionView(title: "Recording", icon: "waveform") {
-                        HStack {
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(path)
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                                if let size = audioFileSize(path) {
-                                    Text(size)
-                                        .font(.caption2)
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack {
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(path)
+                                        .font(.caption)
                                         .foregroundColor(.secondary)
+                                    if let size = audioFileSize(path) {
+                                        Text(size)
+                                            .font(.caption2)
+                                            .foregroundColor(.secondary)
+                                    }
+                                }
+                                Spacer()
+                                Button("Delete", role: .destructive) {
+                                    showDeleteAudioConfirm = true
+                                }
+                                .buttonStyle(.bordered)
+                            }
+
+                            // Playback controls
+                            HStack(spacing: 12) {
+                                Button {
+                                    player.togglePlayPause()
+                                } label: {
+                                    Image(systemName: player.isPlaying ? "pause.circle.fill" : "play.circle.fill")
+                                        .font(.title2)
+                                }
+                                .buttonStyle(.plain)
+
+                                if player.duration > 0 {
+                                    Button {
+                                        player.stop()
+                                    } label: {
+                                        Image(systemName: "stop.circle")
+                                            .font(.title2)
+                                    }
+                                    .buttonStyle(.plain)
+                                    .foregroundColor(.secondary)
+
+                                    Text(player.timeLabel)
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                        .monospacedDigit()
+                                        .frame(width: 80)
                                 }
                             }
-                            Spacer()
-                            Button("Delete", role: .destructive) {
-                                showDeleteAudioConfirm = true
+
+                            if player.duration > 0 {
+                                Slider(
+                                    value: Binding(
+                                        get: { player.currentTime },
+                                        set: { player.seek(to: $0) }
+                                    ),
+                                    in: 0...player.duration
+                                )
                             }
-                            .buttonStyle(.bordered)
                         }
+                    }
+                    .onAppear {
+                        let url = MeetingStore.recordingsDirectory.appendingPathComponent(path)
+                        player.load(url: url)
                     }
                     .confirmationDialog("Delete the audio file?", isPresented: $showDeleteAudioConfirm) {
                         Button("Delete Recording", role: .destructive) {
+                            player.stop()
                             try? store.deleteAudio(for: meeting)
                             audioFileDeleted = true
                         }
@@ -117,6 +164,7 @@ struct MeetingDetailView: View {
                         }
                     }
                 }
+
             }
             .padding(24)
         }
@@ -148,6 +196,7 @@ struct MeetingDetailView: View {
         let mb = Double(bytes) / 1_048_576
         return mb >= 1 ? String(format: "%.1f MB", mb) : "\(bytes / 1024) KB"
     }
+
 }
 
 struct SectionView<Content: View>: View {
@@ -202,5 +251,76 @@ struct ActionItemRow: View {
 extension View {
     func navigationSubtitle(_ date: Date, style: Text.DateStyle) -> some View {
         self.navigationSubtitle(Text(date, style: style))
+    }
+}
+
+@MainActor
+final class AudioPlayerController: NSObject, ObservableObject, AVAudioPlayerDelegate {
+    @Published var isPlaying = false
+    @Published var currentTime: TimeInterval = 0
+    @Published var duration: TimeInterval = 0
+
+    private var player: AVAudioPlayer?
+    private var timer: Timer?
+
+    func load(url: URL) {
+        player = try? AVAudioPlayer(contentsOf: url)
+        player?.delegate = self
+        player?.prepareToPlay()
+        duration = player?.duration ?? 0
+        currentTime = 0
+    }
+
+    func togglePlayPause() {
+        guard let player else { return }
+        if player.isPlaying {
+            player.pause()
+            isPlaying = false
+            stopTimer()
+        } else {
+            player.play()
+            isPlaying = true
+            startTimer()
+        }
+    }
+
+    func stop() {
+        player?.stop()
+        player?.currentTime = 0
+        isPlaying = false
+        currentTime = 0
+        stopTimer()
+    }
+
+    func seek(to time: TimeInterval) {
+        player?.currentTime = time
+        currentTime = time
+    }
+
+    nonisolated func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        Task { @MainActor in
+            self.isPlaying = false
+            self.currentTime = 0
+            self.stopTimer()
+        }
+    }
+
+    private func startTimer() {
+        timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                self?.currentTime = self?.player?.currentTime ?? 0
+            }
+        }
+    }
+
+    private func stopTimer() { timer?.invalidate(); timer = nil }
+
+    private func formatTime(_ t: TimeInterval) -> String {
+        let m = Int(t) / 60, s = Int(t) % 60
+        return String(format: "%d:%02d", m, s)
+    }
+
+    var timeLabel: String {
+        "\(formatTime(currentTime)) / \(formatTime(duration))"
     }
 }
