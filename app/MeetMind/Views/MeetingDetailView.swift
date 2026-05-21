@@ -9,6 +9,13 @@ struct MeetingDetailView: View {
     @State private var showDeleteAudioConfirm = false
     @State private var audioFileDeleted = false
     @StateObject private var player = AudioPlayerController()
+    @State private var isEditingTitle = false
+    @State private var editingTitle = ""
+    @FocusState private var titleFieldFocused: Bool
+
+    private var currentMeeting: Meeting {
+        store.meetings.first(where: { $0.id == meeting.id }) ?? meeting
+    }
 
     var body: some View {
         ScrollView {
@@ -16,12 +23,23 @@ struct MeetingDetailView: View {
 
                 // Header
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(meeting.title)
-                        .font(.largeTitle.bold())
+                    if isEditingTitle {
+                        TextField("Meeting title", text: $editingTitle)
+                            .font(.largeTitle.bold())
+                            .textFieldStyle(.plain)
+                            .focused($titleFieldFocused)
+                            .onSubmit { commitTitle() }
+                            .onChange(of: titleFieldFocused) { focused in
+                                if !focused { commitTitle() }
+                            }
+                    } else {
+                        Text(currentMeeting.title)
+                            .font(.largeTitle.bold())
+                    }
                     HStack(spacing: 8) {
-                        Text(meeting.recordedAt, style: .date)
-                        Text(meeting.recordedAt, style: .time)
-                        if let dur = meeting.durationSeconds {
+                        Text(currentMeeting.recordedAt, style: .date)
+                        Text(currentMeeting.recordedAt, style: .time)
+                        if let dur = currentMeeting.durationSeconds {
                             Text("·")
                             Text(formatDuration(dur))
                         }
@@ -168,19 +186,52 @@ struct MeetingDetailView: View {
             }
             .padding(24)
         }
-        .navigationTitle(meeting.title)
-        .navigationSubtitle(meeting.recordedAt, style: .date)
+        .navigationTitle(currentMeeting.title)
+        .navigationSubtitle(currentMeeting.recordedAt, style: .date)
         .toolbar {
-            if let onBack {
+            if isEditingTitle {
+                ToolbarItem(placement: .primaryAction) {
+                    Button { commitTitle() } label: {
+                        Label("Save", systemImage: "checkmark")
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
                 ToolbarItem(placement: .primaryAction) {
                     Button {
-                        onBack()
+                        isEditingTitle = false
+                        editingTitle = ""
                     } label: {
-                        Label("New Recording", systemImage: "plus")
+                        Label("Cancel", systemImage: "xmark")
+                    }
+                }
+            } else {
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        editingTitle = currentMeeting.title
+                        isEditingTitle = true
+                        titleFieldFocused = true
+                    } label: {
+                        Label("Rename", systemImage: "pencil")
+                    }
+                }
+                if let onBack {
+                    ToolbarItem(placement: .primaryAction) {
+                        Button { onBack() } label: {
+                            Label("New Recording", systemImage: "plus")
+                        }
                     }
                 }
             }
         }
+    }
+
+    private func commitTitle() {
+        let trimmed = editingTitle.trimmingCharacters(in: .whitespaces)
+        isEditingTitle = false
+        guard !trimmed.isEmpty else { return }
+        var updated = currentMeeting
+        updated.title = trimmed
+        try? store.save(updated)
     }
 
     private func formatDuration(_ seconds: Int) -> String {

@@ -6,12 +6,23 @@ struct MeetingListView: View {
 
     @State private var sortOrder: SortOrder = .timeDescending
     @State private var searchText = ""
+    @State private var renamingMeeting: Meeting? = nil
+    @State private var renameText = ""
 
     enum SortOrder: String, CaseIterable {
         case timeDescending = "Newest First"
         case timeAscending  = "Oldest First"
         case nameAscending  = "Name A–Z"
         case nameDescending = "Name Z–A"
+    }
+
+    private func commitRename(_ meeting: Meeting) {
+        let trimmed = renameText.trimmingCharacters(in: .whitespaces)
+        renamingMeeting = nil
+        guard !trimmed.isEmpty else { return }
+        var updated = meeting
+        updated.title = trimmed
+        try? store.save(updated)
     }
 
     private func deleteMeeting(_ meeting: Meeting) {
@@ -70,6 +81,13 @@ struct MeetingListView: View {
                         MeetingRow(meeting: meeting, searchQuery: searchText)
                             .tag(meeting)
                             .contextMenu {
+                                Button {
+                                    renamingMeeting = meeting
+                                    renameText = meeting.title
+                                } label: {
+                                    Label("Rename…", systemImage: "pencil")
+                                }
+                                Divider()
                                 Button(role: .destructive) {
                                     deleteMeeting(meeting)
                                 } label: {
@@ -82,6 +100,25 @@ struct MeetingListView: View {
                     }
                 }
             }
+        }
+        .sheet(item: $renamingMeeting) { m in
+            VStack(alignment: .leading, spacing: 20) {
+                Text("Rename Meeting").font(.headline)
+                TextField("Meeting title", text: $renameText)
+                    .textFieldStyle(.roundedBorder)
+                    .onSubmit { commitRename(m) }
+                HStack {
+                    Spacer()
+                    Button("Cancel") { renamingMeeting = nil }
+                        .keyboardShortcut(.cancelAction)
+                    Button("Save") { commitRename(m) }
+                        .buttonStyle(.borderedProminent)
+                        .keyboardShortcut(.defaultAction)
+                        .disabled(renameText.trimmingCharacters(in: .whitespaces).isEmpty)
+                }
+            }
+            .padding(24)
+            .frame(width: 340)
         }
         .searchable(text: $searchText, placement: .sidebar)
         .navigationTitle("Meetings")
