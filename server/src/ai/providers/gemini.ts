@@ -22,9 +22,10 @@ export class GeminiProvider implements AIProvider {
   }
 
   async process(audioBuffer: Buffer, mimeType: string): Promise<MeetingResult> {
-    const model = this.client.getGenerativeModel({
-      model: process.env.GEMINI_MODEL ?? "gemini-2.0-flash",
-    })
+    const model = this.client.getGenerativeModel(
+      { model: process.env.GEMINI_MODEL ?? "gemini-2.0-flash" },
+      { timeout: 10 * 60 * 1000 }
+    )
 
     let uploadedFileName: string | undefined
     let audioPart: any
