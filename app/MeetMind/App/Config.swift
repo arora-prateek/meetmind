@@ -6,10 +6,10 @@ enum Config {
     static let backendURL = "http://localhost:8080"
 
     // M4A transcoding — 16 kHz mono at 32 kbps is sufficient for speech recognition
-    static let audioSampleRate = 16000
-    static let audioBitRate    = 32000
+    static let audioSampleRate = 16_000   // Hz — 16 kHz
+    static let audioBitRate    = 32_000   // bps — 32 kbps
 
     // HTTP timeouts (seconds)
-    static let healthCheckTimeout: TimeInterval = 5
-    static let processTimeout: TimeInterval     = 300
+    static let healthCheckTimeout: TimeInterval = 5      // 5 s
+    static let processTimeout: TimeInterval     = 300    // 5 * 60 — 5 minutes
 }
