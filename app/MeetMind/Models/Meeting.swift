@@ -48,7 +48,7 @@ struct ProcessingJob: Identifiable {
     let title: String
     let audioFilePath: String   // relative filename, e.g. "<uuid>.wav"
     let recordedAt: Date
-    let durationSeconds: Int
+    let durationSeconds: Int?
     var status: JobStatus
 
     enum JobStatus {

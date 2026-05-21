@@ -63,7 +63,7 @@ class MeetingStore: ObservableObject {
         do {
             let url = MeetingStore.recordingsDirectory.appendingPathComponent(job.audioFilePath)
             let audio = try Data(contentsOf: url)
-            let mimeType = url.pathExtension.lowercased() == "m4a" ? "audio/mp4" : "audio/wav"
+            let mimeType = self.mimeType(for: url)
             let result = try await BackendClient.shared.processMeeting(
                 audio: audio, mimeType: mimeType, title: job.title, recordedAt: job.recordedAt)
             let meeting = Meeting(
@@ -141,6 +141,17 @@ class MeetingStore: ObservableObject {
     }
 
     // MARK: - Private helpers
+
+    private func mimeType(for url: URL) -> String {
+        switch url.pathExtension.lowercased() {
+        case "m4a":         return "audio/mp4"
+        case "mp3":         return "audio/mpeg"
+        case "aiff", "aif": return "audio/aiff"
+        case "flac":        return "audio/flac"
+        case "aac":         return "audio/aac"
+        default:            return "audio/wav"
+        }
+    }
 
     private let iso8601 = ISO8601DateFormatter()
 

@@ -1,4 +1,5 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct MeetingListView: View {
     @EnvironmentObject var store: MeetingStore
@@ -8,12 +9,45 @@ struct MeetingListView: View {
     @State private var searchText = ""
     @State private var renamingMeeting: Meeting? = nil
     @State private var renameText = ""
+    @State private var importErrorMessage: String? = nil
 
     enum SortOrder: String, CaseIterable {
         case timeDescending = "Newest First"
         case timeAscending  = "Oldest First"
         case nameAscending  = "Name A–Z"
         case nameDescending = "Name Z–A"
+    }
+
+    private func importRecording() {
+        let panel = NSOpenPanel()
+        panel.allowedContentTypes = [.audio]
+        panel.allowsMultipleSelection = false
+        panel.message = "Select an audio recording to import"
+        panel.prompt = "Import"
+        guard panel.runModal() == .OK, let url = panel.url else { return }
+
+        let meetingID = UUID()
+        let ext = url.pathExtension.isEmpty ? "wav" : url.pathExtension.lowercased()
+        let destFilename = "\(meetingID.uuidString).\(ext)"
+        let destURL = MeetingStore.recordingsDirectory.appendingPathComponent(destFilename)
+
+        do {
+            try FileManager.default.copyItem(at: url, to: destURL)
+        } catch {
+            importErrorMessage = error.localizedDescription
+            return
+        }
+
+        let modDate = (try? FileManager.default.attributesOfItem(atPath: url.path))?[.modificationDate] as? Date ?? Date()
+        let job = ProcessingJob(
+            id: meetingID,
+            title: url.deletingPathExtension().lastPathComponent,
+            audioFilePath: destFilename,
+            recordedAt: modDate,
+            durationSeconds: nil,
+            status: .processing
+        )
+        store.enqueue(job)
     }
 
     private func commitRename(_ meeting: Meeting) {
@@ -101,6 +135,14 @@ struct MeetingListView: View {
                 }
             }
         }
+        .alert("Import Failed", isPresented: .init(
+            get: { importErrorMessage != nil },
+            set: { if !$0 { importErrorMessage = nil } }
+        )) {
+            Button("OK", role: .cancel) { importErrorMessage = nil }
+        } message: {
+            Text(importErrorMessage ?? "")
+        }
         .sheet(item: $renamingMeeting) { m in
             VStack(alignment: .leading, spacing: 20) {
                 Text("Rename Meeting").font(.headline)
@@ -138,6 +180,13 @@ struct MeetingListView: View {
                     }
                 } label: {
                     Label("Sort", systemImage: "arrow.up.arrow.down")
+                }
+            }
+            ToolbarItem {
+                Button {
+                    importRecording()
+                } label: {
+                    Label("Import Recording", systemImage: "square.and.arrow.down")
                 }
             }
             ToolbarItem {
