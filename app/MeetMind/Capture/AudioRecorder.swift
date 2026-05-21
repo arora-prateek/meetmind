@@ -317,9 +317,9 @@ class AudioRecorder: NSObject, ObservableObject {
         let writer = try AVAssetWriter(outputURL: outputURL, fileType: .m4a)
         let writerInput = AVAssetWriterInput(mediaType: .audio, outputSettings: [
             AVFormatIDKey: kAudioFormatMPEG4AAC,
-            AVSampleRateKey: 16000,
+            AVSampleRateKey: Config.audioSampleRate,
             AVNumberOfChannelsKey: 1,
-            AVEncoderBitRateKey: 32000
+            AVEncoderBitRateKey: Config.audioBitRate
         ])
         writerInput.expectsMediaDataInRealTime = false
         writer.add(writerInput)

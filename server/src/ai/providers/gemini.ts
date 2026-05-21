@@ -6,8 +6,8 @@ import * as fs from "fs"
 import * as os from "os"
 import * as path from "path"
 
-// Gemini inline data limit is ~20 MB of raw bytes; use Files API above this
-const INLINE_BYTE_LIMIT = 20 * 1024 * 1024
+const INLINE_BYTE_LIMIT = parseInt(process.env.GEMINI_INLINE_LIMIT_MB ?? "20", 10) * 1024 * 1024
+const REQUEST_TIMEOUT_MS = parseInt(process.env.GEMINI_REQUEST_TIMEOUT_MS ?? "600000", 10)
 
 export class GeminiProvider implements AIProvider {
   private client: GoogleGenerativeAI
@@ -17,14 +17,13 @@ export class GeminiProvider implements AIProvider {
     const apiKey = process.env.GEMINI_API_KEY
     if (!apiKey) throw new Error("GEMINI_API_KEY is not set")
     this.client = new GoogleGenerativeAI(apiKey)
-    // Large file uploads (e.g. 500MB+ WAVs) can take several minutes — set a 10-minute timeout
-    this.fileManager = new GoogleAIFileManager(apiKey, { timeout: 10 * 60 * 1000 })
+    this.fileManager = new GoogleAIFileManager(apiKey, { timeout: REQUEST_TIMEOUT_MS })
   }
 
   async process(audioBuffer: Buffer, mimeType: string): Promise<MeetingResult> {
     const model = this.client.getGenerativeModel(
       { model: process.env.GEMINI_MODEL ?? "gemini-2.0-flash" },
-      { timeout: 10 * 60 * 1000 }
+      { timeout: REQUEST_TIMEOUT_MS }
     )
 
     let uploadedFileName: string | undefined

@@ -15,7 +15,7 @@ export class ClaudeProvider implements AIProvider {
     const audioBase64 = audioBuffer.toString("base64")
     const response = await this.client.messages.create({
       model: process.env.CLAUDE_MODEL ?? "claude-sonnet-4-6",
-      max_tokens: 4096,
+      max_tokens: parseInt(process.env.CLAUDE_MAX_TOKENS ?? "4096", 10),
       messages: [
         {
           role: "user",

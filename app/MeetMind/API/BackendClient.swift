@@ -31,7 +31,7 @@ class BackendClient {
 
     func checkHealth() async throws -> Bool {
         guard let url = URL(string: "\(baseURL)/health") else { return false }
-        var request = URLRequest(url: url, timeoutInterval: 5)
+        var request = URLRequest(url: url, timeoutInterval: Config.healthCheckTimeout)
         request.httpMethod = "GET"
 
         do {
@@ -48,7 +48,7 @@ class BackendClient {
         }
 
         let boundary = UUID().uuidString
-        var request = URLRequest(url: url, timeoutInterval: 300)
+        var request = URLRequest(url: url, timeoutInterval: Config.processTimeout)
         request.httpMethod = "POST"
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
 
