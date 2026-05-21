@@ -71,7 +71,8 @@ class BackendClient {
 
         appendField("meetingTitle", title)
         appendField("recordedAt", recordedAtStr)
-        appendFile("audio", "recording.wav", mimeType, audio)
+        let fileExt = mimeType.contains("mp4") ? "m4a" : "wav"
+        appendFile("audio", "recording.\(fileExt)", mimeType, audio)
         body.append("--\(boundary)--\r\n".data(using: .utf8)!)
 
         request.httpBody = body

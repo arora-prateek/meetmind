@@ -63,8 +63,9 @@ class MeetingStore: ObservableObject {
         do {
             let url = MeetingStore.recordingsDirectory.appendingPathComponent(job.audioFilePath)
             let audio = try Data(contentsOf: url)
+            let mimeType = url.pathExtension.lowercased() == "m4a" ? "audio/mp4" : "audio/wav"
             let result = try await BackendClient.shared.processMeeting(
-                audio: audio, title: job.title, recordedAt: job.recordedAt)
+                audio: audio, mimeType: mimeType, title: job.title, recordedAt: job.recordedAt)
             let meeting = Meeting(
                 id: job.id, title: job.title, recordedAt: job.recordedAt,
                 durationSeconds: job.durationSeconds,

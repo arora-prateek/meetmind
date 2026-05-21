@@ -278,13 +278,80 @@ class AudioRecorder: NSObject, ObservableObject {
         audioEngine = nil
         audioFile = nil
 
-        guard let url = tempFileURL else {
+        guard let wavURL = tempFileURL else {
             stopContinuation?.resume(throwing: AudioRecorderError.captureFailed("No temp file"))
             stopContinuation = nil
             return
         }
         tempFileURL = nil
-        stopContinuation?.resume(returning: url)
+
+        do {
+            let m4aURL = try await convertToM4A(sourceURL: wavURL)
+            try? FileManager.default.removeItem(at: wavURL)
+            stopContinuation?.resume(returning: m4aURL)
+        } catch {
+            stopContinuation?.resume(throwing: error)
+        }
         stopContinuation = nil
+    }
+
+    // Transcode PCM WAV → AAC M4A at 16kHz mono 32kbps — sufficient for speech,
+    // reduces ~500MB WAV recordings to ~25MB before upload to Gemini.
+    private func convertToM4A(sourceURL: URL) async throws -> URL {
+        let outputURL = FileManager.default.temporaryDirectory
+            .appendingPathComponent(UUID().uuidString)
+            .appendingPathExtension("m4a")
+
+        let asset = AVURLAsset(url: sourceURL)
+        let tracks = try await asset.loadTracks(withMediaType: .audio)
+        guard let track = tracks.first else {
+            throw AudioRecorderError.exportFailed("No audio track in recording")
+        }
+
+        let reader = try AVAssetReader(asset: asset)
+        let readerOutput = AVAssetReaderTrackOutput(track: track, outputSettings: [
+            AVFormatIDKey: kAudioFormatLinearPCM
+        ])
+        reader.add(readerOutput)
+
+        let writer = try AVAssetWriter(outputURL: outputURL, fileType: .m4a)
+        let writerInput = AVAssetWriterInput(mediaType: .audio, outputSettings: [
+            AVFormatIDKey: kAudioFormatMPEG4AAC,
+            AVSampleRateKey: 16000,
+            AVNumberOfChannelsKey: 1,
+            AVEncoderBitRateKey: 32000
+        ])
+        writerInput.expectsMediaDataInRealTime = false
+        writer.add(writerInput)
+
+        guard reader.startReading() else {
+            throw AudioRecorderError.exportFailed(reader.error?.localizedDescription ?? "Could not read audio")
+        }
+        writer.startWriting()
+        writer.startSession(atSourceTime: .zero)
+
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            writerInput.requestMediaDataWhenReady(on: DispatchQueue(label: "meetmind.audio.convert")) {
+                while writerInput.isReadyForMoreMediaData {
+                    if let buffer = readerOutput.copyNextSampleBuffer() {
+                        writerInput.append(buffer)
+                    } else {
+                        writerInput.markAsFinished()
+                        writer.finishWriting {
+                            if writer.status == .failed {
+                                continuation.resume(throwing: AudioRecorderError.exportFailed(
+                                    writer.error?.localizedDescription ?? "M4A export failed"
+                                ))
+                            } else {
+                                continuation.resume()
+                            }
+                        }
+                        return
+                    }
+                }
+            }
+        }
+
+        return outputURL
     }
 }

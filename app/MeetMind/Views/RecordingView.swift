@@ -130,13 +130,14 @@ struct RecordingView: View {
             do {
                 let tempURL = try await recorder.stop()
                 let meetingID = UUID()
+                let ext = tempURL.pathExtension.isEmpty ? "m4a" : tempURL.pathExtension
                 let destURL = MeetingStore.recordingsDirectory
-                    .appendingPathComponent("\(meetingID.uuidString).wav")
+                    .appendingPathComponent("\(meetingID.uuidString).\(ext)")
                 try FileManager.default.moveItem(at: tempURL, to: destURL)
 
                 let job = ProcessingJob(
                     id: meetingID, title: title,
-                    audioFilePath: "\(meetingID.uuidString).wav",
+                    audioFilePath: "\(meetingID.uuidString).\(ext)",
                     recordedAt: recordedAt, durationSeconds: duration,
                     status: .processing
                 )
