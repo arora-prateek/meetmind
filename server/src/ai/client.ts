@@ -16,7 +16,7 @@ export interface ActionItem {
 }
 
 export interface AIProvider {
-  process(audioBase64: string, mimeType: string): Promise<MeetingResult>
+  process(audioBuffer: Buffer, mimeType: string): Promise<MeetingResult>
 }
 
 export function parseAIResponse(raw: string): MeetingResult {
@@ -80,7 +80,7 @@ export class AIClient {
     }
   }
 
-  async process(audioBase64: string, mimeType: string): Promise<MeetingResult> {
-    return this.provider.process(audioBase64, mimeType)
+  async process(audioBuffer: Buffer, mimeType: string): Promise<MeetingResult> {
+    return this.provider.process(audioBuffer, mimeType)
   }
 }

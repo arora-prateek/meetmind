@@ -25,17 +25,8 @@ router.post("/", upload.single("audio"), async (req: Request, res: Response) => 
 
   logger.info(`Processing meeting: "${meetingTitle}" (${audioBuffer.length} bytes, ${mimeType})`)
 
-  let audioBase64: string
   try {
-    audioBase64 = audioBuffer.toString("base64")
-  } catch (err) {
-    logger.error("Failed to encode audio", err)
-    res.status(500).json({ error: "Failed to encode audio", code: "PROCESSING_FAILED" })
-    return
-  }
-
-  try {
-    const result = await aiClient.process(audioBase64, mimeType)
+    const result = await aiClient.process(audioBuffer, mimeType)
 
     // Wipe audio from memory
     audioBuffer.fill(0)

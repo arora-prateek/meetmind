@@ -17,24 +17,24 @@ export class GeminiProvider implements AIProvider {
     const apiKey = process.env.GEMINI_API_KEY
     if (!apiKey) throw new Error("GEMINI_API_KEY is not set")
     this.client = new GoogleGenerativeAI(apiKey)
-    this.fileManager = new GoogleAIFileManager(apiKey)
+    // Large file uploads (e.g. 500MB+ WAVs) can take several minutes — set a 10-minute timeout
+    this.fileManager = new GoogleAIFileManager(apiKey, { timeout: 10 * 60 * 1000 })
   }
 
-  async process(audioBase64: string, mimeType: string): Promise<MeetingResult> {
+  async process(audioBuffer: Buffer, mimeType: string): Promise<MeetingResult> {
     const model = this.client.getGenerativeModel({
       model: process.env.GEMINI_MODEL ?? "gemini-2.0-flash",
     })
 
-    const audioBytes = Buffer.from(audioBase64, "base64")
     let uploadedFileName: string | undefined
     let audioPart: any
 
-    if (audioBytes.length > INLINE_BYTE_LIMIT) {
-      const { part, fileName } = await this.uploadViaFilesApi(audioBytes, mimeType)
+    if (audioBuffer.length > INLINE_BYTE_LIMIT) {
+      const { part, fileName } = await this.uploadViaFilesApi(audioBuffer, mimeType)
       audioPart = part
       uploadedFileName = fileName
     } else {
-      audioPart = { inlineData: { mimeType, data: audioBase64 } }
+      audioPart = { inlineData: { mimeType, data: audioBuffer.toString("base64") } }
     }
 
     try {

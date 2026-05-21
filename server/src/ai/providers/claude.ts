@@ -11,7 +11,8 @@ export class ClaudeProvider implements AIProvider {
     this.client = new Anthropic({ apiKey })
   }
 
-  async process(audioBase64: string, mimeType: string): Promise<MeetingResult> {
+  async process(audioBuffer: Buffer, mimeType: string): Promise<MeetingResult> {
+    const audioBase64 = audioBuffer.toString("base64")
     const response = await this.client.messages.create({
       model: process.env.CLAUDE_MODEL ?? "claude-sonnet-4-6",
       max_tokens: 4096,
