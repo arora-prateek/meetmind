@@ -12,6 +12,7 @@ struct MeetingDetailView: View {
     @State private var isEditingTitle = false
     @State private var editingTitle = ""
     @FocusState private var titleFieldFocused: Bool
+    @State private var copiedID: String? = nil
 
     private var currentMeeting: Meeting {
         store.meetings.first(where: { $0.id == meeting.id }) ?? meeting
@@ -52,7 +53,13 @@ struct MeetingDetailView: View {
 
                 // Summary
                 if let summary = meeting.summary, !summary.isEmpty {
-                    SectionView(title: "Summary", icon: "doc.text") {
+                    SectionView(title: "Summary", icon: "doc.text", accessory: AnyView(
+                        Button { copy(summary, id: "summary") } label: {
+                            Image(systemName: copiedID == "summary" ? "checkmark" : "doc.on.doc")
+                                .foregroundColor(copiedID == "summary" ? .green : .secondary)
+                        }
+                        .buttonStyle(.plain)
+                    )) {
                         Text(summary)
                             .fixedSize(horizontal: false, vertical: true)
                     }
@@ -60,7 +67,13 @@ struct MeetingDetailView: View {
 
                 // Decisions
                 if !meeting.decisions.isEmpty {
-                    SectionView(title: "Decisions", icon: "checkmark.seal") {
+                    SectionView(title: "Decisions", icon: "checkmark.seal", accessory: AnyView(
+                        Button { copy(decisionsText, id: "decisions") } label: {
+                            Image(systemName: copiedID == "decisions" ? "checkmark" : "doc.on.doc")
+                                .foregroundColor(copiedID == "decisions" ? .green : .secondary)
+                        }
+                        .buttonStyle(.plain)
+                    )) {
                         VStack(alignment: .leading, spacing: 6) {
                             ForEach(meeting.decisions, id: \.self) { decision in
                                 HStack(alignment: .top, spacing: 8) {
@@ -75,7 +88,13 @@ struct MeetingDetailView: View {
 
                 // Action Items
                 if !meeting.actionItems.isEmpty {
-                    SectionView(title: "Action Items", icon: "checklist") {
+                    SectionView(title: "Action Items", icon: "checklist", accessory: AnyView(
+                        Button { copy(actionItemsText, id: "actionItems") } label: {
+                            Image(systemName: copiedID == "actionItems" ? "checkmark" : "doc.on.doc")
+                                .foregroundColor(copiedID == "actionItems" ? .green : .secondary)
+                        }
+                        .buttonStyle(.plain)
+                    )) {
                         VStack(alignment: .leading, spacing: 10) {
                             ForEach(Array(meeting.actionItems.enumerated()), id: \.offset) { _, item in
                                 ActionItemRow(item: item)
@@ -164,11 +183,18 @@ struct MeetingDetailView: View {
                         title: "Transcript",
                         icon: "text.quote",
                         accessory: AnyView(
-                            Button(transcriptExpanded ? "Collapse" : "Expand") {
-                                withAnimation { transcriptExpanded.toggle() }
+                            HStack(spacing: 12) {
+                                Button { copy(transcript, id: "transcript") } label: {
+                                    Image(systemName: copiedID == "transcript" ? "checkmark" : "doc.on.doc")
+                                        .foregroundColor(copiedID == "transcript" ? .green : .secondary)
+                                }
+                                .buttonStyle(.plain)
+                                Button(transcriptExpanded ? "Collapse" : "Expand") {
+                                    withAnimation { transcriptExpanded.toggle() }
+                                }
+                                .buttonStyle(.plain)
+                                .foregroundColor(.accentColor)
                             }
-                            .buttonStyle(.plain)
-                            .foregroundColor(.accentColor)
                         )
                     ) {
                         if transcriptExpanded {
@@ -185,6 +211,7 @@ struct MeetingDetailView: View {
 
             }
             .padding(24)
+            .textSelection(.enabled)
         }
         .navigationTitle(currentMeeting.title)
         .navigationSubtitle(currentMeeting.recordedAt, style: .date)
@@ -212,6 +239,14 @@ struct MeetingDetailView: View {
                         titleFieldFocused = true
                     } label: {
                         Label("Rename", systemImage: "pencil")
+                    }
+                }
+                ToolbarItem(placement: .primaryAction) {
+                    Button { copy(fullMeetingText, id: "all") } label: {
+                        Label(
+                            copiedID == "all" ? "Copied!" : "Copy Meeting",
+                            systemImage: copiedID == "all" ? "checkmark" : "doc.on.doc"
+                        )
                     }
                 }
                 if let onBack {
@@ -246,6 +281,51 @@ struct MeetingDetailView: View {
               let bytes = attrs[.size] as? Int64 else { return nil }
         let mb = Double(bytes) / 1_048_576
         return mb >= 1 ? String(format: "%.1f MB", mb) : "\(bytes / 1024) KB"
+    }
+
+    private func copy(_ text: String, id: String) {
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(text, forType: .string)
+        withAnimation(.easeInOut(duration: 0.15)) { copiedID = id }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            withAnimation(.easeInOut(duration: 0.15)) {
+                if copiedID == id { copiedID = nil }
+            }
+        }
+    }
+
+    private var decisionsText: String {
+        meeting.decisions.map { "• \($0)" }.joined(separator: "\n")
+    }
+
+    private var actionItemsText: String {
+        meeting.actionItems.map { item in
+            var line = "• \(item.description)"
+            if let owner = item.owner { line += " — \(owner)" }
+            if let due = item.dueDate { line += " — Due: \(due)" }
+            return line
+        }.joined(separator: "\n")
+    }
+
+    private var fullMeetingText: String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .long
+        formatter.timeStyle = .short
+        var header = "\(currentMeeting.title)\n\(formatter.string(from: currentMeeting.recordedAt))"
+        if let dur = currentMeeting.durationSeconds {
+            header += " · \(formatDuration(dur))"
+        }
+        var parts = [header]
+        if let summary = meeting.summary, !summary.isEmpty {
+            parts.append("SUMMARY\n\(summary)")
+        }
+        if !meeting.decisions.isEmpty {
+            parts.append("DECISIONS\n\(decisionsText)")
+        }
+        if !meeting.actionItems.isEmpty {
+            parts.append("ACTION ITEMS\n\(actionItemsText)")
+        }
+        return parts.joined(separator: "\n\n")
     }
 
 }
